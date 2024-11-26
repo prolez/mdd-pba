@@ -23,6 +23,9 @@ _build _dl _images _mnt _target:
 clean:
 	rm -f _images/minpba.img
 
+cleanall:
+	rm -fR _build _dl _images _target
+
 ###########
 # busybox #
 ###########
