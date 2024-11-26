@@ -1,14 +1,17 @@
 BUSYBOX_VSN = 1.33.1
 LINUX_VSN = 5.13.10
 SEDUTIL_VSN = 8364306
+TPM2_TOOLS_VSN = 5.7
 
 all:	\
-	fetch-busybox fetch-linux fetch-sedutil	\
+	fetch-busybox fetch-linux fetch-sedutil	fetch-tpm2-tools \
 	checksum	\
 	extract-busybox configure-busybox build-busybox install-busybox	\
 	extract-sedutil configure-sedutil build-sedutil install-sedutil	\
+	extract-tpm2-tools configure-tpm2-tools build-tpm2-tools install-tpm2-tools \
 	install-overlay	\
 	extract-linux configure-linux build-linux	\
+	clean \
 	build-image
 
 checksum:
@@ -16,6 +19,9 @@ checksum:
 
 _build _dl _images _mnt _target:
 	mkdir $@
+
+clean:
+	rm -f _images/minpba.img
 
 ###########
 # busybox #
@@ -112,6 +118,39 @@ _build/sedutil/sedutil-cli:
 _target/usr/sbin/sedutil-cli:
 	mkdir -p $(@D)
 	cp _build/sedutil/sedutil-cli $@
+
+##############
+# tpm2-tools #
+##############
+
+fetch-tpm2-tools: _dl _dl/tpm2-tools-$(TPM2_TOOLS_VSN).tar.gz
+
+extract-tpm2-tools: _build _build/tpm2-tools
+
+configure-tpm2-tools: _build/tpm2-tools/configure
+
+build-tpm2-tools: _build/tpm2-tools/tpm2_tool
+
+install-tpm2-tools: _target _target/usr/bin/tpm2_tool
+
+_dl/tpm2-tools-$(TPM2_TOOLS_VSN).tar.gz:
+	wget -O $@ https://github.com/tpm2-software/tpm2-tools/releases/download/$(TPM2_TOOLS_VSN)/tpm2-tools-$(TPM2_TOOLS_VSN).tar.gz
+
+_build/tpm2-tools:
+	mkdir $@
+	tar -zxf _dl/tpm2-tools-$(TPM2_TOOLS_VSN).tar.gz --strip-components=1 -C $@
+
+_build/tpm2-tools/configure:
+	cd $(@D) && \
+	./bootstrap && \
+	./configure --prefix=/usr
+
+_build/tpm2-tools/tpm2_tool:
+	make -C $(@D) -j 4
+
+_target/usr/bin/tpm2_tool:
+	mkdir -p $(@D)
+	make DESTDIR=$$(readlink -f _target) -C _build/tpm2-tools install
 
 ###########
 # overlay #
