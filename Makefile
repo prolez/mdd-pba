@@ -21,7 +21,7 @@ _build _dl _images _mnt _target:
 	mkdir $@
 
 clean:
-	rm -f _images/minpba.img
+	rm -f _images/mdd-pba.img
 
 cleanall:
 	rm -fR _build _dl _images _target
@@ -176,9 +176,9 @@ _target/dev/console:
 # image #
 #########
 
-build-image: _images _images/minpba.img
+build-image: _images _images/mdd-pba.img
 
-_images/minpba.img: _mnt
+_images/mdd-pba.img: _mnt
 	dd if=/dev/zero of=$@ bs=1M count=34
 	(echo 'g'; echo 'n'; echo ''; echo ''; echo ''; echo 't'; echo '1'; echo 'w') | fdisk $@
 	sudo losetup -P -v /dev/loop1 $@
