@@ -24,7 +24,7 @@ clean:
 	rm -f _images/mdd-pba.img
 
 cleanall:
-	rm -fR _build _dl _images _target
+	rm -fR _build _dl _images _mnt _target
 
 ###########
 # busybox #
@@ -130,7 +130,7 @@ fetch-tpm2-tools: _dl _dl/tpm2-tools-$(TPM2_TOOLS_VSN).tar.gz
 
 extract-tpm2-tools: _build _build/tpm2-tools
 
-configure-tpm2-tools: _build/tpm2-tools/configure
+configure-tpm2-tools: _build/tpm2-tools/config.h
 
 build-tpm2-tools: _build/tpm2-tools/tpm2_tool
 
@@ -143,7 +143,7 @@ _build/tpm2-tools:
 	mkdir $@
 	tar -zxf _dl/tpm2-tools-$(TPM2_TOOLS_VSN).tar.gz --strip-components=1 -C $@
 
-_build/tpm2-tools/configure:
+_build/tpm2-tools/config.h:
 	cd $(@D) && \
 	./bootstrap && \
 	./configure --prefix=/usr
