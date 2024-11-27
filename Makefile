@@ -142,7 +142,8 @@ _build/tpm2-tools:
 _build/tpm2-tools/config.h:
 	cd $(@D) && \
 	./bootstrap && \
-	./configure --prefix=/usr
+	LDFLAGS='-static'	\
+		./configure --prefix=/usr --disable-hardening
 
 _build/tpm2-tools/tpm2_tool:
 	make -C $(@D) -j 4
