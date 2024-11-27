@@ -4,6 +4,8 @@
 /bin/mount -t proc none /proc
 /bin/mount -t sysfs none /sys
 
+#/bin/sh
+
 /bin/stty -echo
 unlocked=0
 while [ $unlocked -eq 0 ]; do
