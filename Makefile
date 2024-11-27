@@ -11,8 +11,7 @@ all:	\
 	extract-tpm2-tools configure-tpm2-tools build-tpm2-tools install-tpm2-tools \
 	install-overlay	\
 	extract-linux configure-linux build-linux	\
-	clean \
-	build-image
+	clean-image build-image
 
 checksum:
 	sha256sum -c SHA256
@@ -21,9 +20,6 @@ _build _dl _images _mnt _target:
 	mkdir $@
 
 clean:
-	rm -f _images/mdd-pba.img
-
-cleanall:
 	rm -fR _build _dl _images _mnt _target
 
 ###########
@@ -175,6 +171,9 @@ _target/dev/console:
 #########
 # image #
 #########
+
+clean-image:
+	rm -f _images/mdd-pba.img
 
 build-image: _images _images/mdd-pba.img
 
